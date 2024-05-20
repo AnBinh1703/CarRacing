@@ -233,7 +233,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 double betValue1 = 0.0;
                 double betValue2 = 0.0;
                 double betValue3 = 0.0;
-                double totalBet;
+                double totalBet = 0.0;
                 if (!bet1.getText().toString().isEmpty()) {
                     betValue1 = Double.parseDouble(bet1.getText().toString());
                 }
@@ -246,7 +246,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 double moneyTotal = Double.parseDouble(moneyResult.getText().toString());
 
-
+                // check user dat cuoc chua
+                if (betValue1 == 0.0 && betValue2 == 0.0 && betValue3 == 0.0) {
+                    // Hiển thị thông báo nếu chưa đặt cược
+                    Toast.makeText(getApplicationContext(), "Vui lòng đặt cược trước khi bắt đầu!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 //
                 if (betValue1 != 0.0 && betValue2 == 0.0 && betValue3 == 0) {
 //                    Log.println(Log.INFO,"check", "1 "+ moneyTotal +" "+ betValue1 + " ");
