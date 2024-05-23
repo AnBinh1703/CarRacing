@@ -1,7 +1,9 @@
 package andb.example.carracing;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -43,7 +45,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EditText bet1;
     private EditText bet2;
     private EditText bet3;
-
+    private TextView winnerText;
+    private TextView secondWinnerText;
+    private TextView profitText;
+    private TextView moneyLeftText;
+    private Button btnBack;
     int winner = -1;
     int secondWinner = -1;
     double profitTotal = 0.0;
@@ -78,6 +84,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bet3 = findViewById(R.id.betCar3);
         moneyLeftTotal = findViewById(R.id.moneyLeft);
         btnReset = findViewById(R.id.reset);
+        winnerText = findViewById(R.id.winnerText);
+        secondWinnerText = findViewById(R.id.secondWinnerText);
+        profitText = findViewById(R.id.profitText);
+        moneyLeftText = findViewById(R.id.moneyLeftText);
+        btnBack = findViewById(R.id.btnBack);
 
         // Initialize SeekBars and TextViews Arrays
         seekBars = new SeekBar[]{sbContent1, sbContent2, sbContent3};
@@ -177,7 +188,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         double moneyTotal = parseDouble(moneyResult.getText().toString());
 
         if (betValue1 == 0.0 && betValue2 == 0.0 && betValue3 == 0.0) {
-            Toast.makeText(getApplicationContext(), "Vui lòng đặt cược trước khi bắt đầu!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Please bet before starting!", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -235,17 +246,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         profit = profitTotal - betValueTotal;
 
-        profitValue.setText(String.valueOf(profit));
+       /* profitValue.setText(String.valueOf(profit));
         double total = parseDouble(moneyLeftTotal.getText().toString()) + profitTotal;
         moneyResult.setText(String.valueOf(total));
 
         // Start ResultActivity and pass the result data
-       /* Intent intent = new Intent(MainActivity.this, ResultActivity.class);
+       *//* Intent intent = new Intent(MainActivity.this, ResultActivity.class);
         intent.putExtra("winner", "The Car Winner is: " + winnerColor); // Thay đổi key thành "winner"
         intent.putExtra("secondWinner", "The Second Winner is: " + secondWinnerColor); // Thay đổi key thành "secondWinner"
         intent.putExtra("profit", profit);
         intent.putExtra("moneyLeft", total);
-        startActivityForResult(intent, RESULT_REQUEST_CODE); */// Sử dụng startActivityForResult để nhận kết quả trả về
+        startActivityForResult(intent, RESULT_REQUEST_CODE); *//*// Sử dụng startActivityForResult để nhận kết quả trả về
         Intent intent = new Intent(MainActivity.this, ResultActivity.class);
         intent.putExtra("winner", "The Car Winner is: " + winnerColor); // Thay đổi key thành "winner"
         intent.putExtra("secondWinner", "The Second Winner is: " + secondWinnerColor); // Thay đổi key thành "secondWinner"
@@ -254,8 +265,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         intent.putExtra("bet1", betNum1);
         intent.putExtra("bet2", betNum2);
         intent.putExtra("bet3", betNum3);
-        startActivityForResult(intent, RESULT_REQUEST_CODE);}
+        startActivityForResult(intent, RESULT_REQUEST_CODE);}*/
+        SharedPreferences sharedPreferences = getSharedPreferences("ResultData", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("winner","The Car Winner is: " + winnerColor);
+        editor.putString("secondWinner","The Second Winner is: " + secondWinnerColor);
+        editor.putFloat("profit", (float) profit);
+        editor.putFloat("moneyLeft", (float) (moneyLeft + profitTotal)); // Update money left with profit
+        editor.apply();
 
+        // Start ResultActivity and pass the result data
+        Intent intent = new Intent(MainActivity.this, ResultActivity.class);
+        startActivity(intent);}
     // Calculate Profit
     private double calculateProfit(int secondWinner, double betNum1, double betNum2, double profitTotal, double betValueTotal, String winnerColor) {
         double profit = 0.0;
