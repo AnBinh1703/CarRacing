@@ -249,8 +249,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Intent intent = new Intent(MainActivity.this, ResultActivity.class);
         intent.putExtra("winner", "The Car Winner is: " + winnerColor); // Thay đổi key thành "winner"
         intent.putExtra("secondWinner", "The Second Winner is: " + secondWinnerColor); // Thay đổi key thành "secondWinner"
-        intent.putExtra("profit", profit);
-        intent.putExtra("moneyLeft", total);
+        intent.putExtra( "profit", "The profit: " +profit);
+        intent.putExtra("moneyLeft", "Your total " + total);
         intent.putExtra("bet1", betNum1);
         intent.putExtra("bet2", betNum2);
         intent.putExtra("bet3", betNum3);
