@@ -31,6 +31,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private SeekBar sbContent2;
     private SeekBar sbContent3;
     private Button btnStart;
+    private Button btnLogout;
+
     private Button btnRefresh;
     private Button btnReset;
     private TextView txtFinish;
@@ -91,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         profitText = findViewById(R.id.profitText);
         moneyLeftText = findViewById(R.id.moneyLeftText);
         btnBack = findViewById(R.id.btnBack);
+        btnLogout = findViewById(R.id.btnLogout);  // Find the btnLogout button by its ID
 
         // Initialize SeekBars and TextViews Arrays
         seekBars = new SeekBar[]{sbContent1, sbContent2, sbContent3};
@@ -146,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             seekBars[index].setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                    textSpeed[index].setText(String.valueOf(progress) + " cm/min");
+                    textSpeed[index].setText(String.valueOf(progress) + " m/s");
                 }
 
                 @Override
@@ -172,6 +175,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // Handle Reset Button Click
         btnReset.setOnClickListener(v -> resetGame());
+        btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Log out the user and navigate back to the login screen
+                logoutAndNavigateToLogin();
+            }
+        });
     }
 
     // Handle Race Logic
@@ -286,7 +296,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // Start ResultActivity and pass the result data
         Intent intent = new Intent(MainActivity.this, ResultActivity.class);
-        startActivity(intent);}
+        startActivityForResult(intent, RESULT_REQUEST_CODE);
+    }
     // Calculate Profit
     private double calculateProfit(int secondWinner, double betNum1, double betNum2, double profitTotal, double betValueTotal, String winnerColor) {
         double profit = 0.0;
@@ -440,14 +451,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (data != null) {
                 double moneyLeft = data.getDoubleExtra("moneyLeft", 0.0);
                 moneyResult.setText(String.valueOf(moneyLeft));
-                double bet1Val = data.getDoubleExtra("bet1", 0.0);
-                double bet2Val = data.getDoubleExtra("bet2", 0.0);
-                double bet3Val = data.getDoubleExtra("bet3", 0.0);
-                bet1.setText(String.valueOf(bet1Val));
-                bet2.setText(String.valueOf(bet2Val));
-                bet3.setText(String.valueOf(bet3Val));
                 updateUI();
             }
         }
     }
+    // Method to handle logout and navigate to login screen
+    private void logoutAndNavigateToLogin() {
+        // Clear any user session or data as needed
+        // For example, clear SharedPreferences, delete any cached data, etc.
+
+        // Here, we'll clear SharedPreferences for demonstration
+        SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+        sharedPreferences.edit().clear().apply();
+
+        // Navigate back to the login screen
+        Intent loginIntent = new Intent(MainActivity.this, SignInActivity2.class);
+        loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(loginIntent);
+        finish();  // Finish MainActivity to prevent going back to it with the back button
+    }
+
 }
