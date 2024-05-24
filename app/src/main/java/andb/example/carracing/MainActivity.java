@@ -1,5 +1,6 @@
 package andb.example.carracing;
 
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -93,6 +95,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Initialize SeekBars and TextViews Arrays
         seekBars = new SeekBar[]{sbContent1, sbContent2, sbContent3};
         final TextView[] textSpeed = {car1Speed,car2Speed,car3Speed};
+        LinearLayout backgroundView = findViewById(R.id.layoutRacing);
+
+        // Create an animation
+        ObjectAnimator backgroundAnimator = ObjectAnimator.ofFloat(backgroundView, "translationX", 0f, -backgroundView.getWidth());
+        backgroundAnimator.setDuration(5000); // duration 5 seconds
+        backgroundAnimator.setRepeatCount(ObjectAnimator.INFINITE);
+        backgroundAnimator.setRepeatMode(ObjectAnimator.RESTART);
+        backgroundAnimator.start();
 
         // Initialize Finished Status List
         initFinishedList();
